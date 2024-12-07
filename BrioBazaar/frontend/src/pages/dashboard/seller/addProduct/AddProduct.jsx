@@ -26,16 +26,18 @@ const colors = [
 ];
 
 const AddProduct = () => {
-    const { seller } = useSelector((state) => state.sellerAuth); // Use seller from sellerAuth
+    const { user } = useSelector((state) => state.auth);
+
     const [product, setProduct] = useState({
         name: '',
         category: '',
         color: '',
         price: '',
-        stockLevel: '',
+        stockLevel: '',  // Added stockLevel
         description: ''
     });
     const [image, setImage] = useState('');
+
     const [addProduct, { isLoading, error }] = useAddProductMutation();
     const navigate = useNavigate();
 
@@ -49,47 +51,22 @@ const AddProduct = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
-        // Check if the seller is logged in
-        if (!seller?._id) {
-            alert('You must be logged in as a seller to add a product.');
+
+        if (!product.name || !product.category || !product.price || !product.color || !product.description || !product.stockLevel) {
+            alert('Please fill in all fields.');
             return;
         }
-    
-        // Ensure all required fields are filled
-        if (!product.name || !product.category || !product.price || !product.description) {
-            alert('Please fill in all required fields.');
-            return;
-        }
-    
         try {
-            const productData = {
-                ...product,
-                image,
-                author: seller._id, // Ensure the seller ID is sent
-                stockLevel: product.stockLevel || 0,
-            };
-    
-            await addProduct(productData).unwrap();
-    
+            await addProduct({ ...product, image, author: user?._id }).unwrap();
             alert('Product added successfully!');
-            setProduct({
-                name: '',
-                category: '',
-                description: '',
-                price: '',
-                oldPrice: '',
-                color: '',
-                stockLevel: '',
-            });
+            setProduct({ name: '', category: '', color: '', price: '', stockLevel: '', description: '' });
             setImage('');
-            navigate('/shop');
+            navigate("/shop");
         } catch (err) {
             console.error('Failed to add product:', err);
-            alert('Failed to add product. Please try again.');
         }
     };
-    
+
     return (
         <div className="container mx-auto mt-8">
             <h2 className="text-2xl font-bold mb-6">Add New Product</h2>
@@ -125,7 +102,7 @@ const AddProduct = () => {
                 />
                 <TextInput
                     label="Stock Level"
-                    name="stockLevel"
+                    name="stockLevel"  // Added stock level input field
                     type="number"
                     placeholder="Enter stock quantity"
                     value={product.stockLevel}

@@ -23,13 +23,17 @@ import AdminDMain from '../pages/dashboard/admin/dashboard/AdminDMain';
 import UserDMain from '../pages/dashboard/user/dashboard/UserDMain';
 import AddProduct from '../pages/dashboard/admin/addProduct/AddProduct';
 import ManageProducts from '../pages/dashboard/admin/manageProduct/ManageProducts';
+import ManageProducts1 from '../pages/dashboard/seller/manageProduct/ManageProducts';
 import UpdateProduct from '../pages/dashboard/admin/manageProduct/UpdateProduct';
+import UpdateProduct1 from '../pages/dashboard/seller/manageProduct/UpdateProduct';
 import ManageUser from '../pages/dashboard/admin/users/ManageUser';
 import ManageOrders from '../pages/dashboard/admin/manageOrders/ManageOrders';
+import ManageOrders1 from '../pages/dashboard/seller/manageOrders/ManageOrders';
+import ManageReviews from '../pages/dashboard/seller/manageReviews/ManageReviews';
 import ManageSellers from '../pages/dashboard/admin/sellers/ManageSeller'; // Import Manage Sellers
 import Aboutus from '../pages/AboutUs/AboutUsPage';
 import SellerLogin from '../components/SellerLogin';  // Import Seller Login component
-
+import SellerDMain from '../pages/dashboard/seller/dashboard/SellerDMain';  // Import Seller Dashboard Main component
 // Import Promotion related components
 import AddPromotion from '../pages/dashboard/admin/Promotions/AddPromotion';  // Add Promotion component
 import ManagePromotions from '../pages/dashboard/admin/Promotions/ManagePromotions';  // Manage Promotions component
@@ -60,70 +64,47 @@ const router = createBrowserRouter([
   { path: '/seller-login', element: <SellerLogin /> }, // Seller Login Route  
   { path: '/login', element: <Login /> },
   { path: '/register', element: <Register /> },
+
   {
-    path: '/dashboard',
+    path: '/dashboard/user',
     element: <PrivateRoute><DashboardLayout /></PrivateRoute>,
     children: [
-      // User routes
       { path: '', element: <UserDMain /> },
       { path: 'orders', element: <UserOrders /> },
       { path: 'payments', element: <UserPayments /> },
       { path: 'profile', element: <UserProfile /> },
       { path: 'reviews', element: <UserReviews /> },
+    ],
+  },
 
-      // Admin routes (only accessible by admins)
-      {
-        path: 'admin',
-        element: <PrivateRoute role="admin"><AdminDMain /></PrivateRoute>,
-      },
-      {
-        path: 'add-new-post',
-        element: <PrivateRoute role="admin"><AddProduct /></PrivateRoute>,
-      },
-      {
-        path: 'manage-products',
-        element: <PrivateRoute role="admin"><ManageProducts /></PrivateRoute>,
-      },
-      {
-        path: 'update-product/:id',
-        element: <PrivateRoute role="admin"><UpdateProduct /></PrivateRoute>,
-      },
-      {
-        path: 'users',
-        element: <PrivateRoute role="admin"><ManageUser /></PrivateRoute>,
-      },
-      {
-        path: 'manage-orders',
-        element: <PrivateRoute role="admin"><ManageOrders /></PrivateRoute>,
-      },
-      // Admin route for managing sellers
-      {
-        path: 'manage-sellers',
-        element: <PrivateRoute role="admin"><ManageSellers /></PrivateRoute>,
-      },
-      // Admin route for Add Promotion
-      {
-        path: 'add-promotion',
-        element: <PrivateRoute role="admin"><AddPromotion /></PrivateRoute>,
-      },
-      // Admin route for Manage Promotions
-      {
-        path: 'manage-promotions',
-        element: <PrivateRoute role="admin"><ManagePromotions /></PrivateRoute>,
-      }
+  {
+    path: '/dashboard/admin',
+    element: <PrivateRoute role="admin"><DashboardLayout /></PrivateRoute>,
+    children: [
+      { path: '', element: <AdminDMain /> },
+      { path: 'add-new-post', element: <PrivateRoute role="admin"><AddProduct /></PrivateRoute> },
+      { path: 'manage-products', element: <PrivateRoute role="admin"><ManageProducts /></PrivateRoute> },
+      { path: 'update-product/:id', element: <PrivateRoute role="admin"><UpdateProduct /></PrivateRoute> },
+      { path: 'users', element: <PrivateRoute role="admin"><ManageUser /></PrivateRoute> },
+      { path: 'manage-orders', element: <PrivateRoute role="admin"><ManageOrders /></PrivateRoute> },
+      { path: 'manage-sellers', element: <PrivateRoute role="admin"><ManageSellers /></PrivateRoute> },
+      { path: 'add-promotion', element: <PrivateRoute role="admin"><AddPromotion /></PrivateRoute> },
+      { path: 'manage-promotions', element: <PrivateRoute role="admin"><ManagePromotions /></PrivateRoute> },
     ],
   },
   // Seller Dashboard Routes
-  // {
-  //   path: '/dashboard/seller',
-  //   element: <SellerPrivateRoute><DashboardLayout /></SellerPrivateRoute>,
-  //   children: [
-  //     { path: '', element: <SellerDMain /> },
-  //     { path: 'add-product', element: <SellerPrivateRoute><AddProduct /></SellerPrivateRoute> },
-  //     { path: 'manage-products', element: <SellerPrivateRoute><ManageProducts /></SellerPrivateRoute> },
-  //     { path: 'manage-orders', element: <SellerPrivateRoute><ManageOrders /></SellerPrivateRoute> },
-  //   ],
-  // },
+  {
+    path: '/seller/dashboard',
+    element: <SellerPrivateRoute><DashboardLayout /></SellerPrivateRoute>,
+    children: [
+      { path: '', element: <SellerDMain /> },
+      { path: 'add-product', element: <SellerPrivateRoute><AddProduct /></SellerPrivateRoute> },
+      { path: 'manage-products', element: <SellerPrivateRoute><ManageProducts1 /></SellerPrivateRoute> },
+      { path: 'update-product/:id', element: <SellerPrivateRoute><UpdateProduct1 /></SellerPrivateRoute> },
+      { path: 'manage-orders', element: <SellerPrivateRoute><ManageOrders1 /></SellerPrivateRoute> },
+      { path: 'manage-reviews', element: <SellerPrivateRoute><ManageReviews /></SellerPrivateRoute> },
+    ],
+  },
 ]);
 
 export default router;

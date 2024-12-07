@@ -2,6 +2,7 @@ import React from 'react'
 import { useLogoutUserMutation } from '../../redux/features/auth/authApi';
 import { useDispatch } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
+import { logout } from '../../redux/features/auth/authSlice';
 
 const AdminDashboard = () => {
     const [logoutUser] = useLogoutUserMutation();
@@ -47,7 +48,7 @@ const AdminDashboard = () => {
                     </li>
                     <li>
                         <NavLink
-                            to="/dashboard/manage-products"
+                            to="/dashboard/admin/manage-products"
                             className={({ isActive }) =>
                                 isActive ? "text-white font-bold" : "text-gray-400"
                             }
@@ -57,7 +58,7 @@ const AdminDashboard = () => {
                     </li>
                     <li>
                         <NavLink
-                            to="/dashboard/manage-sellers"  
+                            to="/dashboard/admin/manage-sellers"  
                             className={({ isActive }) =>
                                 isActive ? "text-white font-bold" : "text-gray-400"
                             }
@@ -67,7 +68,7 @@ const AdminDashboard = () => {
                     </li>
                     <li className="mb-3">
                         <NavLink
-                            to="/dashboard/users"
+                            to="/dashboard/admin/users"
                             className={({ isActive }) =>
                                 isActive ? "text-white font-bold" : "text-gray-400"
                             }
@@ -80,7 +81,7 @@ const AdminDashboard = () => {
 
                     <li className="mb-3">
                         <NavLink
-                            to="/dashboard/add-promotion"
+                            to="/dashboard/admin/add-promotion"
                             className={({ isActive }) =>
                                 isActive ? "text-white font-bold" : "text-gray-400"
                             }
@@ -91,7 +92,7 @@ const AdminDashboard = () => {
 
                     <li className="mb-3">
                         <NavLink
-                            to="/dashboard/manage-promotions"
+                            to="/dashboard/admin/manage-promotions"
                             className={({ isActive }) =>
                                 isActive ? "text-white font-bold" : "text-gray-400"
                             }
@@ -102,7 +103,7 @@ const AdminDashboard = () => {
 
                     <li className="mb-3">
                         <NavLink
-                            to="/dashboard/manage-orders"
+                            to="/dashboard/admin/manage-orders"
                             className={({ isActive }) =>
                                 isActive ? "text-white font-bold" : "text-gray-400"
                             }

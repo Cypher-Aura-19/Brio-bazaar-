@@ -6,8 +6,8 @@ const SellerPrivateRoute = ({ children }) => {
   const { seller } = useSelector((state) => state.sellerAuth); // Access seller state
   const location = useLocation();
 
-  if (!seller) {
-    alert("You must be logged in as a seller!");
+  if (!seller || !seller.isApproved) {
+    alert("You must be logged in as a seller and approved!");
     return <Navigate to="/seller-login" state={{ from: location }} replace />;
   }
 

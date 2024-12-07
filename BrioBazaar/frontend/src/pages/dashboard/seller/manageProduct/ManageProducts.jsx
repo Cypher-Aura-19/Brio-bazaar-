@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useDeleteProductMutation, useFetchAllProductsQuery } from '../../../../redux/features/products/productsApi';
 import { Link } from 'react-router-dom';
 import { formatDate } from '../../../../utils/dateFormater';
@@ -6,6 +7,8 @@ import { formatDate } from '../../../../utils/dateFormater';
 const ManageProducts = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [productsPerPage] = useState(12);
+
+    const { seller } = useSelector((state) => state.sellerAuth); // Get logged-in seller info
 
     const { data: { products = [], totalPages, totalProducts } = {}, error, isLoading, refetch } = useFetchAllProductsQuery({
         category: '',
@@ -28,18 +31,27 @@ const ManageProducts = () => {
         }
     };
 
-    // pagination control from shop page
+    // Debugging: Log seller ID and product author IDs
+    console.log("Logged-in seller ID:", seller?.id);
+
+    // Filter products to only show those belonging to the logged-in seller
+    const sellerProducts = products.filter((product) => {
+        console.log("Product Author ID:", product?.author?.id); // Debugging
+        return product.author?._id === seller?._id; // Only include products where the author ID matches the seller ID
+    });
+
+    // Pagination control
     const startProduct = (currentPage - 1) * productsPerPage + 1;
-    const endProduct = startProduct + products.length - 1;
+    const endProduct = startProduct + sellerProducts.length - 1;
 
     const handlePageChange = (pageNumber) => {
-        console.log(`Changing to page: ${pageNumber}`);
+        console.log(`Changing to page: ${pageNumber}`); // Debugging
         if (pageNumber > 0 && pageNumber <= totalPages) {
             setCurrentPage(pageNumber);
         }
     };
 
-    // Assume stock threshold for "low stock"
+    // Stock threshold for "low stock"
     const LOW_STOCK_THRESHOLD = 5;
 
     return (
@@ -53,7 +65,7 @@ const ManageProducts = () => {
                             <div className="flex flex-wrap items-center">
                                 <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                                     <h3 className="font-semibold text-base text-blueGray-700">
-                                        All Products
+                                        My Products
                                     </h3>
                                 </div>
                                 <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
@@ -67,7 +79,7 @@ const ManageProducts = () => {
                                     </Link>
                                 </div>
                             </div>
-                            <h3 className='text-sm my-4'>Showing {startProduct} to {endProduct} of {totalProducts} products</h3>
+                            <h3 className='text-sm my-4'>Showing {startProduct} to {endProduct} of {sellerProducts.length} products</h3>
                         </div>
 
                         <div className="block w-full overflow-x-auto">
@@ -100,7 +112,7 @@ const ManageProducts = () => {
 
                                 <tbody>
                                     {
-                                        products && products.map((product, index) => {
+                                        sellerProducts.map((product, index) => {
                                             const isLowStock = product?.stockLevel <= LOW_STOCK_THRESHOLD;
 
                                             return (
@@ -126,7 +138,7 @@ const ManageProducts = () => {
                                                     </td>
 
                                                     <td className="border-t-0 px-6 align-center border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                                        <Link to={`/dashboard/admin/update-product/${product?._id}`} className="hover:text-gray-400">
+                                                        <Link to={`/seller/dashboard/update-product/${product?._id}`} className="hover:text-gray-400">
                                                             <span className="flex gap-1 items-center justify-center">
                                                             Edit</span>
                                                         </Link>
@@ -202,6 +214,6 @@ const ManageProducts = () => {
             </section>
         </>
     );
-}
+};
 
 export default ManageProducts;

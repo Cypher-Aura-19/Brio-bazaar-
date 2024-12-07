@@ -25,14 +25,9 @@ const colors = [
     { label: 'Green', value: 'green' }
 ];
 
-const approvedOptions = [
-    { label: 'Select Approval Status', value: '' },
-    { label: 'Approved', value: true },
-    { label: 'Not Approved', value: false }
-];
-
 const UpdateProduct = () => {
     const { id } = useParams();
+
     const navigate = useNavigate(); // For navigation
     const { user } = useSelector((state) => state.auth);
 
@@ -43,13 +38,12 @@ const UpdateProduct = () => {
         price: '',
         stockLevel: '', // Added stockLevel field
         description: '',
-        image: '', // This will store the URL or the image file
-        approved: '' // Added approved field
+        image: '' // This will store the URL or the image file
     });
     const [newImage, setNewImage] = useState(null); // For storing the new image
 
     const { data: productData, isLoading: isProductLoading, error: fetchError, refetch } = useFetchProductByIdQuery(id); // Add refetch
-    const { name, category, color, description, image: imageURL, price, stockLevel, approved } = productData?.product || {};
+    const { name, category, color, description, image: imageURL, price, stockLevel } = productData?.product || {};
 
     const [updateProduct, { isLoading: isUpdating, error: updateError }] = useUpdateProductMutation();
 
@@ -62,8 +56,7 @@ const UpdateProduct = () => {
                 price: price || '',
                 stockLevel: stockLevel || '',  // Setting stockLevel
                 description: description || '',
-                image: imageURL || '',
-                approved: approved !== undefined ? approved : '' // Set the initial value of approved
+                image: imageURL || ''
             });
         }
     }, [productData]);
@@ -180,15 +173,6 @@ const UpdateProduct = () => {
                         className="add-product-InputCSS bg-black text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-white pl-3 pr-4 py-2 rounded-md placeholder-white w-full mt-1"
                     />
                 </div>
-
-                {/* approval status */}
-                <SelectInput
-                    label="Approval Status"
-                    name="approved"
-                    value={product.approved}
-                    onChange={handleChange}
-                    options={approvedOptions}
-                />
 
                 <div>
                     <button

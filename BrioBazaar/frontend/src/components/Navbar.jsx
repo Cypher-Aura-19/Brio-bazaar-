@@ -15,6 +15,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const [logoutUser] = useLogoutUserMutation();
   const { user } = useSelector((state) => state.auth);
+  const { seller } = useSelector((state) => state.sellerAuth);
   const navigate = useNavigate();
 
   const handleCartToggle = () => setIsCartOpen(!isCartOpen);
@@ -31,22 +32,37 @@ const Navbar = () => {
     }
   };
 
+  // Admin dropdown menus
   const adminDropdownMenus = [
     { label: "Dashboard", path: "/dashboard/admin" },
-    { label: "Manage Items", path: "/dashboard/manage-products" },
-    { label: "All Orders", path: "/dashboard/manage-orders" },
-    { label: "Add New Post", path: "/dashboard/add-new-post" },
+    { label: "Manage Items", path: "/dashboard/admin/manage-products" },
+    { label: "All Orders", path: "/dashboard/admin/manage-orders" },
+    { label: "Add New Post", path: "/dashboard/admin/add-new-post" },
   ];
 
+  // User dropdown menus
   const userDropdownMenus = [
-    { label: "Dashboard", path: "/dashboard" },
-    { label: "Profile", path: "/dashboard/profile" },
-    { label: "Payments", path: "/dashboard/payments" },
-    { label: "Orders", path: "/dashboard/orders" },
+    { label: "Dashboard", path: "/dashboard/user" },
+    { label: "Profile", path: "/dashboard/user/profile" },
+    { label: "Payments", path: "/dashboard/user/payments" },
+    { label: "Orders", path: "/dashboard/user/orders" },
   ];
 
-  const dropdownMenus =
-    user?.role === "admin" ? adminDropdownMenus : userDropdownMenus;
+  // Seller dropdown menus (if seller is approved)
+  const sellerDropdownMenus = seller?.isApproved
+    ? [
+        { label: "Dashboard", path: "/seller/dashboard" },
+        { label: "Manage Products", path: "/dashboard/manage-products" },
+        { label: "View Orders", path: "/dashboard/seller-orders" },
+      ]
+    : [];
+
+  // Determine which menu to show based on user role or seller approval
+  const dropdownMenus = user?.role === "admin" 
+    ? adminDropdownMenus 
+    : seller?.isApproved 
+    ? sellerDropdownMenus 
+    : userDropdownMenus;
 
   return (
     <header className="fixed-nav-bar w-nav bg-black text-gray-400 z-50 w-full">
@@ -61,42 +77,40 @@ const Navbar = () => {
           </button>
         </div>
 
-               {/* Navigation Links */}
-       <ul
-       className={`nav__links sm:flex sm:space-x-4 ${
-         isMobileMenuOpen
-           ? "flex flex-col items-start space-y-2 mt-4 absolute bg-black top-full left-0 right-0 px-4 py-6 sm:static sm:flex-row sm:space-y-0 sm:mt-0 sm:bg-transparent sm:px-0 sm:py-0"
-           : "hidden sm:flex sm:space-x-4"
-       }`}
-     >
-       <li className="link">
-         <Link to="/" className="hover:text-gray-200">
-           Home
-         </Link>
-       </li>
-       <li className="link">
-         <Link to="/shop" className="hover:text-gray-200">
-           Shop
-         </Link>
-       </li>
-       <li className="link">
-         <Link to="/Seller-register" className="hover:text-gray-200">
-           Become a Seller
-         </Link>
-       </li>
-       <li className="link">
-         <Link to="/about-us" className="hover:text-gray-200">
-           About Us
-         </Link>
-       </li>
-     </ul>
+        {/* Navigation Links */}
+        <ul
+          className={`nav__links sm:flex sm:space-x-4 ${
+            isMobileMenuOpen
+              ? "flex flex-col items-start space-y-2 mt-4 absolute bg-black top-full left-0 right-0 px-4 py-6 sm:static sm:flex-row sm:space-y-0 sm:mt-0 sm:bg-transparent sm:px-0 sm:py-0"
+              : "hidden sm:flex sm:space-x-4"
+          }`}
+        >
+          <li className="link">
+            <Link to="/" className="hover:text-gray-200">
+              Home
+            </Link>
+          </li>
+          <li className="link">
+            <Link to="/shop" className="hover:text-gray-200">
+              Shop
+            </Link>
+          </li>
+          <li className="link">
+            <Link to="/Seller-register" className="hover:text-gray-200">
+              Become a Seller
+            </Link>
+          </li>
+          <li className="link">
+            <Link to="/about-us" className="hover:text-gray-200">
+              About Us
+            </Link>
+          </li>
+        </ul>
 
-
-{/* Logo */}
-<div className="nav__logo text-gray-200 flex-1 text-center hidden sm:block">
-  <Link to="/">Lebaba<span>.</span></Link>
-</div>
-
+        {/* Logo */}
+        <div className="nav__logo text-gray-200 flex-1 text-center hidden sm:block">
+          <Link to="/">Lebaba<span>.</span></Link>
+        </div>
 
         {/* Nav Icons (Search, Cart, Avatar) */}
         <div className="nav__icons relative flex items-center space-x-4 sm:flex-none">
@@ -184,11 +198,6 @@ const Navbar = () => {
             </Link>
           </li>
           <li className="link">
-            <Link to="/" className="hover:text-gray-200" onClick={handleMobileMenuToggle}>
-              Pages
-            </Link>
-          </li>
-          <li className="link">
             <Link to="/about-us" className="hover:text-gray-200" onClick={handleMobileMenuToggle}>
               About Us
             </Link>
@@ -209,17 +218,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-
-
-
-
-
-
-
-
-
-
-
-
-

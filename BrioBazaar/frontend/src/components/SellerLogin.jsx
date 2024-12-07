@@ -1,48 +1,44 @@
-/* eslint-disable react/no-unescaped-entities */
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { FaEnvelope, FaLock } from 'react-icons/fa';
-import { useLoginUserMutation } from '../redux/features/auth/authApi';
-import { setUser } from '../redux/features/auth/authSlice';
+import { useSellerLoginMutation } from '../redux/features/auth/authApi'; // Import seller login hook
+import { setSeller } from '../redux/features/auth/authSlice';
 
-const Login = () => {
+const SellerLogin = () => {
   const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
   const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
   const dispatch = useDispatch();
 
-  const [loginUser, { isLoading: loginLoading }] = useLoginUserMutation();
-
+  const [sellerLogin, { isLoading: loginLoading }] = useSellerLoginMutation();
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleSellerLogin = async (e) => {
     e.preventDefault();
     localStorage.clear();
     console.log("Local storage cleared before login.");
 
-    const data = {
-      email,
-      password,
-    };
+    const data = { email, password };
 
     try {
-      const response = await loginUser(data).unwrap();
-      const { token, user } = response;
-      dispatch(setUser({ user }));
-      alert('Login successful');
-      navigate('/');
+      const response = await sellerLogin(data).unwrap();
+      const { token, seller } = response; // Ensure this matches the backend response
+      dispatch(setSeller({ seller })); // Correctly dispatch setSeller for the seller login
+      alert('Seller login successful');
+      navigate('/seller/dashboard'); // Redirect seller to their dashboard
     } catch (err) {
-      setMessage('Please provide a valid email and password!');
+      setMessage(err.data?.message || 'Invalid email or password.');
     }
+    
   };
 
   return (
     <section className="h-screen flex items-center justify-center bg-gradient-to-br bg-black">
       <div className="w-full max-w-md border border-gray-700 bg-black p-8 rounded-lg shadow-lg">
-        <h2 className="text-4xl font-bold text-white text-center mb-4">Welcome Back</h2>
-        <p className="text-gray-400 text-center mb-8">Please login to access your account</p>
-        <form onSubmit={handleLogin} className="space-y-6">
+        <h2 className="text-4xl font-bold text-white text-center mb-4">Seller Login</h2>
+        <p className="text-gray-400 text-center mb-8">Access your seller account</p>
+        <form onSubmit={handleSellerLogin} className="space-y-6">
           <div className="relative">
             <FaEnvelope className="absolute top-3 left-3 text-white" />
             <input
@@ -78,8 +74,8 @@ const Login = () => {
           <Link to="/forgot-password" className="text-sm text-gray-400 hover:text-white">
             Forgot password?
           </Link>
-          <Link to="/register" className="text-sm text-gray-400 hover:text-white">
-            Create an account
+          <Link to="/seller-register" className="text-sm text-gray-400 hover:text-white">
+            Create a seller account
           </Link>
         </div>
       </div>
@@ -87,4 +83,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SellerLogin;
